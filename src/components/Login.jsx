@@ -14,7 +14,7 @@ function Login({ onLoginSuccess }) {
 
     const trimmedEmail = email.trim();
     try {
-      const apiBaseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const apiBaseUrl = import.meta.env.VITE_API_URL || '/api';
       const res = await fetch(`${apiBaseUrl}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

@@ -5,7 +5,11 @@ const assetSchema = new mongoose.Schema(
     type: { type: String, required: true },
     name: { type: String, required: true, unique: true },
     status: { type: String, required: true },
-    battery: { type: Number, min: 0, max: 100, default: 100 }
+    battery: { type: Number, min: 0, max: 100, default: null },
+    fuel: { type: Number, min: 0, max: 100, default: null },
+    personnel: { type: Number, min: 0, default: null },
+    latitude: { type: Number, required: true },
+    longitude: { type: Number, required: true }
   },
   { timestamps: true }
 );

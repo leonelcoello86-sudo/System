@@ -6,7 +6,7 @@ function SystemAudit() {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    const apiBaseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+    const apiBaseUrl = import.meta.env.VITE_API_URL || '/api';
 
     fetch(`${apiBaseUrl}/api/system-audit`, {
       method: 'GET',

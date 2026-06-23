@@ -20,7 +20,20 @@ const corsOrigins = process.env.CORS_ORIGINS
   : ['http://localhost:5173', 'http://127.0.0.1:5173'];
 
 app.use(cors({
-  origin: corsOrigins,
+  origin: (origin, callback) => {
+    if (!origin) {
+      return callback(null, true);
+    }
+
+    const normalizedOrigin = origin.trim();
+    const localhostRegex = /^https?:\/\/(?:127\.0\.0\.1|localhost)(?::\d+)?$/;
+
+    if (corsOrigins.includes(normalizedOrigin) || localhostRegex.test(normalizedOrigin)) {
+      return callback(null, true);
+    }
+
+    return callback(new Error('CORS policy: access denied')); 
+  },
   credentials: true
 }));
 

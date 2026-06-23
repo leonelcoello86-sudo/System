@@ -8,7 +8,7 @@ function UserCreation({ onUserCreated }) {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const apiBaseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+  const apiBaseUrl = import.meta.env.VITE_API_URL || '/api';
 
   const handleSubmit = async (event) => {
     event.preventDefault();
