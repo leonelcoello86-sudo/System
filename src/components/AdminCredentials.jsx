@@ -49,6 +49,8 @@ function AdminCredentials() {
       setCurrentPassword('');
       setNewPassword('');
       setConfirmPassword('');
+      try { window.dispatchEvent(new CustomEvent('home-data-refresh')); } catch (e) {}
+      try { window.dispatchEvent(new CustomEvent('system-audit-updated')); } catch (e) {}
     } catch (e) {
       setError(String(e?.message || e));
     } finally {

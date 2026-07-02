@@ -6,7 +6,7 @@ const systemAuditSchema = new mongoose.Schema(
     event: { type: String, required: true },
     severity: { type: String, enum: ['Info', 'Alerta', 'Crítico'], default: 'Info' }
   },
-  { timestamps: false }
+  { timestamps: true }
 );
 
 export const SystemAudit = mongoose.model('SystemAudit', systemAuditSchema);

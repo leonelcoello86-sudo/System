@@ -2,8 +2,13 @@ import { Router } from 'express';
 
 import { authRequired, requireAdmin } from '../middleware/authRequired.js';
 import { Asset } from '../models/Asset.js';
+import { SystemAudit } from '../models/SystemAudit.js';
 
 const router = Router();
+
+function nowTimeString() {
+  return new Date().toLocaleTimeString('es-VE', { hour12: false });
+}
 
 const parseNumber = (value) => {
   if (value === undefined || value === null || value === '') return null;
@@ -11,6 +16,15 @@ const parseNumber = (value) => {
   const parsed = Number(normalized);
   return Number.isNaN(parsed) ? null : parsed;
 };
+
+router.get('/summary', authRequired, async (req, res) => {
+  try {
+    const total = await Asset.countDocuments({});
+    return res.json({ total });
+  } catch (err) {
+    return res.status(500).json({ message: 'Error obteniendo resumen de assets', error: String(err?.message || err) });
+  }
+});
 
 router.get('/', authRequired, async (req, res) => {
   try {
@@ -23,10 +37,15 @@ router.get('/', authRequired, async (req, res) => {
 
 router.post('/', authRequired, async (req, res) => {
   try {
-    const { type, name, status, battery, fuel, personnel, latitude, longitude } = req.body || {};
+    const { type, name, status, icon, battery, fuel, personnel, latitude, longitude } = req.body || {};
 
-    if (!type || !name || !status || latitude === undefined || longitude === undefined) {
-      return res.status(400).json({ message: 'type, name, status, latitude y longitude requeridos' });
+    if (!type || !name || !status || !icon || latitude === undefined || longitude === undefined) {
+      return res.status(400).json({ message: 'type, name, status, icon, latitude y longitude requeridos' });
+    }
+
+    const validIcons = ['soldado', 'vehiculo', 'dron'];
+    if (!validIcons.includes(icon)) {
+      return res.status(400).json({ message: 'icon inválido' });
     }
 
     const latNum = parseNumber(latitude);
@@ -39,6 +58,7 @@ router.post('/', authRequired, async (req, res) => {
       type,
       name,
       status,
+      icon,
       latitude: latNum,
       longitude: lonNum,
       battery: null,
@@ -57,10 +77,28 @@ router.post('/', authRequired, async (req, res) => {
     const existing = await Asset.findOne({ name });
     if (existing) {
       await Asset.updateOne({ _id: existing._id }, assetData);
+      try {
+        await SystemAudit.create({
+          time: nowTimeString(),
+          event: `Activo actualizado por ${req.user?.email || 'anónimo'}: ${name}`,
+          severity: 'Info'
+        });
+      } catch (e) {
+        // ignore audit errors
+      }
       return res.json({ message: 'Asset actualizado' });
     }
 
-    await Asset.create(assetData);
+    const created = await Asset.create(assetData);
+    try {
+      await SystemAudit.create({
+        time: nowTimeString(),
+        event: `Activo creado por ${req.user?.email || 'anónimo'}: ${name}`,
+        severity: 'Info'
+      });
+    } catch (e) {
+      // ignore audit errors
+    }
     return res.status(201).json({ message: 'Asset creado' });
   } catch (err) {
     return res.status(500).json({ message: 'Error guardando asset', error: String(err?.message || err) });
@@ -70,10 +108,15 @@ router.post('/', authRequired, async (req, res) => {
 router.put('/:id', authRequired, async (req, res) => {
   try {
     const { id } = req.params;
-    const { type, name, status, battery, fuel, personnel, latitude, longitude } = req.body || {};
+    const { type, name, status, icon, battery, fuel, personnel, latitude, longitude } = req.body || {};
 
-    if (!type || !name || !status || latitude === undefined || longitude === undefined) {
-      return res.status(400).json({ message: 'type, name, status, latitude y longitude requeridos' });
+    if (!type || !name || !status || !icon || latitude === undefined || longitude === undefined) {
+      return res.status(400).json({ message: 'type, name, status, icon, latitude y longitude requeridos' });
+    }
+
+    const validIcons = ['soldado', 'vehiculo', 'dron'];
+    if (!validIcons.includes(icon)) {
+      return res.status(400).json({ message: 'icon inválido' });
     }
 
     const latNum = parseNumber(latitude);
@@ -86,6 +129,7 @@ router.put('/:id', authRequired, async (req, res) => {
       type,
       name,
       status,
+      icon,
       latitude: latNum,
       longitude: lonNum,
       battery: null,
@@ -106,6 +150,16 @@ router.put('/:id', authRequired, async (req, res) => {
       return res.status(404).json({ message: 'Asset no encontrado' });
     }
 
+    try {
+      await SystemAudit.create({
+        time: nowTimeString(),
+        event: `Activo actualizado por ${req.user?.email || 'anónimo'}: ${updated.name}`,
+        severity: 'Info'
+      });
+    } catch (e) {
+      // ignore
+    }
+
     return res.json({ message: 'Asset actualizado', asset: updated });
   } catch (err) {
     return res.status(500).json({ message: 'Error actualizando asset', error: String(err?.message || err) });
@@ -119,6 +173,17 @@ router.delete('/:id', authRequired, async (req, res) => {
     if (!deleted) {
       return res.status(404).json({ message: 'Asset no encontrado' });
     }
+
+    try {
+      await SystemAudit.create({
+        time: nowTimeString(),
+        event: `Activo eliminado por ${req.user?.email || 'anónimo'}: ${deleted.name}`,
+        severity: 'Alerta'
+      });
+    } catch (e) {
+      // ignore
+    }
+
     return res.json({ message: 'Asset eliminado' });
   } catch (err) {
     return res.status(500).json({ message: 'Error eliminando asset', error: String(err?.message || err) });

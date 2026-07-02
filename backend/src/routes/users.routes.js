@@ -34,11 +34,15 @@ router.post('/', authRequired, requireAdmin, async (req, res) => {
       role: 'user'
     });
 
-    await SystemAudit.create({
-      time: nowTimeString(),
-      event: `Nuevo usuario creado: ${normalizedEmail}`,
-      severity: 'Info'
-    });
+    try {
+      await SystemAudit.create({
+        time: nowTimeString(),
+        event: `Nuevo usuario creado: ${normalizedEmail} por ${req.user?.email || 'anónimo'}`,
+        severity: 'Info'
+      });
+    } catch (e) {
+      // ignore audit errors
+    }
 
     return res.status(201).json({ message: 'Usuario creado', user: { email: normalizedEmail, role: 'user' } });
   } catch (err) {

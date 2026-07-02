@@ -50,6 +50,8 @@ function UserCreation({ onUserCreated }) {
       setEmail('');
       setPassword('');
       setConfirmPassword('');
+      try { window.dispatchEvent(new CustomEvent('home-data-refresh')); } catch (e) {}
+      try { window.dispatchEvent(new CustomEvent('system-audit-updated')); } catch (e) {}
 
       if (onUserCreated) onUserCreated();
     } catch (e) {

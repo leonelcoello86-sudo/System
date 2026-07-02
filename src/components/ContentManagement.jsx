@@ -1,10 +1,16 @@
 import { useEffect, useState } from 'react';
 
 const assetTypes = ['UAV', 'Personal', 'Vehículo'];
+const assetIcons = [
+  { value: 'soldado', label: 'Soldado' },
+  { value: 'vehiculo', label: 'Vehículo' },
+  { value: 'dron', label: 'Dron' }
+];
 const statuses = ['Activo', 'Patrulla', 'Reserva', 'Mantenimiento'];
 
 const defaultAsset = {
   type: 'UAV',
+  icon: 'dron',
   name: '',
   status: 'Activo',
   battery: '100',
@@ -65,6 +71,7 @@ function ContentManagement() {
     const token = localStorage.getItem('token');
     const payload = {
       type: asset.type,
+      icon: asset.icon,
       name: asset.name.trim(),
       status: asset.status,
       latitude: asset.latitude,
@@ -94,6 +101,8 @@ function ContentManagement() {
 
       setMessage(data?.message || 'Activo guardado');
       await fetchAssets();
+      try { window.dispatchEvent(new CustomEvent('home-data-refresh')); } catch (e) {}
+      try { window.dispatchEvent(new CustomEvent('system-audit-updated')); } catch (e) {}
       resetForm();
     } catch (e) {
       setError(String(e?.message || e));
@@ -104,6 +113,7 @@ function ContentManagement() {
     setEditingAssetId(assetItem._id);
     setAsset({
       type: assetItem.type,
+      icon: assetItem.icon || 'soldado',
       name: assetItem.name,
       status: assetItem.status,
       battery: assetItem.battery?.toString() ?? '100',
@@ -131,6 +141,8 @@ function ContentManagement() {
       }
       setMessage(data?.message || 'Activo eliminado');
       await fetchAssets();
+      try { window.dispatchEvent(new CustomEvent('home-data-refresh')); } catch (e) {}
+      try { window.dispatchEvent(new CustomEvent('system-audit-updated')); } catch (e) {}
       if (editingAssetId === assetId) resetForm();
     } catch (e) {
       setError(String(e?.message || e));
@@ -177,6 +189,21 @@ function ContentManagement() {
               className="w-full rounded-2xl border border-white/10 bg-[#0b1117]/90 px-4 py-3 text-white outline-none"
               required
             />
+          </label>
+
+          <label className="space-y-2 text-sm text-slate-300">
+            Icono
+            <select
+              value={asset.icon}
+              onChange={(e) => setAsset({ ...asset, icon: e.target.value })}
+              className="w-full rounded-2xl border border-white/10 bg-[#0b1117]/90 px-4 py-3 text-white outline-none"
+            >
+              {assetIcons.map((iconOption) => (
+                <option key={iconOption.value} value={iconOption.value}>
+                  {iconOption.label}
+                </option>
+              ))}
+            </select>
           </label>
 
           <label className="space-y-2 text-sm text-slate-300">
@@ -246,20 +273,6 @@ function ContentManagement() {
             </label>
           )}
 
-          {asset.type === 'Personal' && (
-            <label className="space-y-2 text-sm text-slate-300">
-              Número de efectivos
-              <input
-                type="number"
-                value={asset.personnel}
-                onChange={(e) => setAsset({ ...asset, personnel: e.target.value })}
-                min="1"
-                className="w-full rounded-2xl border border-white/10 bg-[#0b1117]/90 px-4 py-3 text-white outline-none"
-                required
-              />
-            </label>
-          )}
-
           <div className="lg:col-span-2 flex flex-col gap-3">
             <button
               type="submit"
@@ -299,6 +312,7 @@ function ContentManagement() {
               <tr>
                 <th className="px-4 py-3 text-left uppercase tracking-[0.2em] text-cyan-300">Nombre</th>
                 <th className="px-4 py-3 text-left uppercase tracking-[0.2em] text-cyan-300">Tipo</th>
+                <th className="px-4 py-3 text-left uppercase tracking-[0.2em] text-cyan-300">Icono</th>
                 <th className="px-4 py-3 text-left uppercase tracking-[0.2em] text-cyan-300">Estado</th>
                 <th className="px-4 py-3 text-left uppercase tracking-[0.2em] text-cyan-300">Ubicación</th>
                 <th className="px-4 py-3 text-left uppercase tracking-[0.2em] text-cyan-300">Detalle</th>
@@ -310,6 +324,7 @@ function ContentManagement() {
                 <tr key={a._id} className="hover:bg-white/5">
                   <td className="px-4 py-3 font-mono text-cyan-100">{a.name}</td>
                   <td className="px-4 py-3">{a.type}</td>
+                  <td className="px-4 py-3 capitalize">{a.icon}</td>
                   <td className="px-4 py-3">{a.status}</td>
                   <td className="px-4 py-3">{a.latitude?.toFixed(4)}, {a.longitude?.toFixed(4)}</td>
                   <td className="px-4 py-3">

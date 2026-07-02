@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
-import { MapContainer, TileLayer, CircleMarker, Popup, Tooltip } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, Tooltip, useMap } from 'react-leaflet';
+import { divIcon } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import TelemetryPanel from './TelemetryPanel.jsx';
 
@@ -46,46 +47,79 @@ function MapView() {
     return defaultCenter;
   }, [assets]);
 
+  const markerIcons = {
+    soldado: divIcon({
+      html: '<div style="display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;background:#0f172a;color:#22d3ee;border:2px solid #22d3ee;font-size:18px;">👤</div>',
+      className: 'custom-marker-icon',
+      iconSize: [34, 34],
+      iconAnchor: [17, 34]
+    }),
+    vehiculo: divIcon({
+      html: '<div style="display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;background:#0f172a;border:2px solid #f8b400;"><svg viewBox="0 0 64 64" width="22" height="22" fill="#f8b400" xmlns="http://www.w3.org/2000/svg"><path d="M6 38h52v8H6z"/><path d="M14 30h36l8 8H6l8-8z"/><path d="M22 30v-8h18l8 8H22z"/><path d="M46 14h-4l-4 8h-8l-4 6h-4v6h24v-14z"/><circle cx="18" cy="50" r="5"/><circle cx="46" cy="50" r="5"/></svg></div>',
+      className: 'custom-marker-icon',
+      iconSize: [34, 34],
+      iconAnchor: [17, 34]
+    }),
+    dron: divIcon({
+      html: '<div style="display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;background:#0f172a;color:#ef4444;border:2px solid #ef4444;font-size:18px;">🛩️</div>',
+      className: 'custom-marker-icon',
+      iconSize: [34, 34],
+      iconAnchor: [17, 34]
+    })
+  };
+
+  function MapAutoResize({ trigger }) {
+    // child component for MapContainer to access the map instance and force resize
+    // when the assets list changes so the map redraws to the container size.
+    const map = useMap();
+    useEffect(() => {
+      // allow layout to settle
+      setTimeout(() => map.invalidateSize(), 120);
+    }, [trigger]);
+    return null;
+  }
+
   return (
     <div className="space-y-6">
-      <div className="grid gap-6 lg:grid-cols-[2.2fr_0.8fr] xl:grid-cols-[2.6fr_0.6fr]">
+      <div className="grid gap-6 items-start lg:grid-cols-[2.2fr_0.8fr] xl:grid-cols-[2.6fr_0.6fr]">
         <section className="rounded-[30px] border border-white/10 bg-[#06121c]/80 p-0 shadow-glass backdrop-blur-xl">
-          <div className="h-[520px] overflow-hidden rounded-[30px] bg-[#0b1921]/70 shadow-[inset_0_0_40px_rgba(0,242,255,0.08)]">
+            <div className="h-[640px] overflow-hidden rounded-[30px] bg-[#0b1921]/70 shadow-[inset_0_0_40px_rgba(0,242,255,0.08)]">
             <MapContainer center={mapCenter} zoom={12} scrollWheelZoom className="h-full w-full">
               <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
+              <MapAutoResize trigger={assets.length} />
               {assets.map((asset) => {
                 if (asset.latitude === undefined || asset.longitude === undefined) return null;
+                const markerIcon = markerIcons[asset.icon] || markerIcons.soldado;
                 return (
-                  <CircleMarker
+                  <Marker
                     key={asset._id}
-                    center={[asset.latitude, asset.longitude]}
-                    radius={10}
-                    pathOptions={{ color: '#22d3ee', fillColor: '#22d3ee', fillOpacity: 0.8 }}
+                    position={[asset.latitude, asset.longitude]}
+                    icon={markerIcon}
                   >
                     <Popup>
                       <div className="text-sm">
                         <strong>{asset.name}</strong>
                         <div>Tipo: {asset.type}</div>
+                        <div>Icono: {asset.icon}</div>
                         <div>Estado: {asset.status}</div>
                         {asset.type === 'UAV' && <div>Batería: {asset.battery ?? 'N/A'}%</div>}
                         {asset.type === 'Vehículo' && <div>Combustible: {asset.fuel ?? 'N/A'}%</div>}
                         {asset.type === 'Personal' && <div>Efectivos: {asset.personnel ?? 'N/A'}</div>}
                       </div>
                     </Popup>
-                    <Tooltip direction="top" offset={[0, -10]} opacity={1} permanent>
-                      {asset.name}
-                    </Tooltip>
-                  </CircleMarker>
+                  </Marker>
                 );
               })}
             </MapContainer>
           </div>
         </section>
 
-        <TelemetryPanel assets={assets} loading={loading} error={error} />
+        <div className="max-h-[640px] overflow-y-auto">
+          <TelemetryPanel assets={assets} loading={loading} error={error} />
+        </div>
       </div>
       <section className="rounded-[30px] border border-white/10 bg-[#06121c]/80 p-6 shadow-glass backdrop-blur-xl">
         <div className="flex flex-col gap-3">
