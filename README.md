@@ -48,6 +48,12 @@ Dashboard web (React + Vite + Tailwind) con backend Node.js + Express + MongoDB.
    npm run dev
    ```
 
+## Pruebas y documentación técnica
+- `cd backend && npm test` — ejecuta la suite de pruebas unitarias del backend
+- `cd backend && npm run docs` — genera la documentación técnica en `backend/docs`
+- `npm run backend:test` — ejecuta los tests del backend desde la raíz
+- `npm run backend:docs` — genera la documentación del backend desde la raíz
+
 ## Build de producción
 ```bash
 npm run build
@@ -56,6 +62,43 @@ npm run build
 ## Scripts útiles
 - `npm run backend:install` — instala dependencias del backend
 - `npm run backend:dev` — inicia el backend desde la raíz
+
+## Comandos para evaluación (tests y documentación)
+
+Sigue estos comandos para reproducir lo que se evaluará en el avance:
+
+- Instalar dependencias del backend:
+
+```bash
+cd backend
+npm install
+```
+
+- Ejecutar la suite de pruebas del backend:
+
+```bash
+cd backend
+npm test
+```
+
+- Generar la documentación técnica autocontenida (JSDoc):
+
+```bash
+cd backend
+npm run docs
+# Abrir `backend/docs/index.html` en un navegador para ver la documentación
+```
+
+- Levantar el backend en desarrollo:
+
+```bash
+cd backend
+npm run dev
+```
+
+El workflow de CI está en `.github/workflows/ci.yml` y ejecuta los tests del backend en cada `pull_request` y `push` a `main`.
+- `npm run backend:test` — ejecuta pruebas del backend
+- `npm run backend:docs` — genera documentación técnica del backend
 
 ## Qué ya está implementado
 - Inicio de sesión real con JWT (`POST /api/auth/login`)

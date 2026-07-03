@@ -5,7 +5,11 @@
   "type": "module",
   "main": "server.js",
   "scripts": {
-    "dev": "node server.js"
+    "dev": "node server.js",
+    "test": "vitest run",
+    "docs": "jsdoc -c jsdoc.json",
+    "lint": "eslint \"src/**/*.js\" --ext .js",
+    "lint:fix": "eslint \"src/**/*.js\" --ext .js --fix"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
@@ -14,6 +18,11 @@
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.6.3"
+  },
+  "devDependencies": {
+    "vitest": "^4.1.9",
+    "jsdoc": "^4.0.5",
+    "eslint": "^8.50.0"
   }
 }
 

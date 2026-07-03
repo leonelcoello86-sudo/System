@@ -8,7 +8,9 @@
     "build": "vite build",
     "preview": "vite preview",
     "backend:install": "cd backend && npm install",
-    "backend:dev": "cd backend && npm run dev"
+    "backend:dev": "cd backend && npm run dev",
+    "backend:test": "cd backend && npm test",
+    "backend:docs": "cd backend && npm run docs"
   },
   "dependencies": {
     "leaflet": "^1.9.4",

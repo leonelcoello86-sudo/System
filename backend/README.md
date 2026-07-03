@@ -17,6 +17,18 @@
 npm run dev
 ```
 
+## Pruebas unitarias
+```bash
+npm test
+```
+
+## Documentación técnica
+```bash
+npm run docs
+```
+
+La documentación generada se publicará en `backend/docs`.
+
 > Si no agregas script dev, ejecuta:
 ```bash
 node server.js
