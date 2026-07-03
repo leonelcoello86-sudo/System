@@ -1,0 +1,5 @@
+feat(backend): asset service, validation and save logic (Tarea #2)
+test(backend): add unit tests for asset service (Tarea #4)
+chore(ci): add GitHub Actions workflow for backend tests (Tarea #5)
+docs(backend): add jsdoc config and generate docs (Tarea #6, Tarea #7)
+docs: update README with exact commands for tests and docs (Tarea #8)
