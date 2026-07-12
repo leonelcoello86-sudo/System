@@ -1,4 +1,21 @@
 services:
+  - type: web
+    name: tactical-control-dashboard-backend
+    env: node
+    plan: free
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && npm run start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: MONGODB_URI
+        sync: false
+      - key: CORS_ORIGINS
+        value: https://tactical-control-dashboard-frontend.onrender.com
+
   - type: static
     name: tactical-control-dashboard-frontend
     env: static
@@ -7,4 +24,4 @@ services:
     staticPublishPath: dist
     envVars:
       - key: VITE_API_URL
-        value: ""
+        value: https://tactical-control-dashboard-backend.onrender.com
