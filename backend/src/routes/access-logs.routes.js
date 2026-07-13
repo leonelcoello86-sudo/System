@@ -7,8 +7,11 @@ const router = Router();
 
 router.get('/', authRequired, requireAdmin, async (req, res) => {
   try {
-    const { today } = req.query;
+    const { today, page, limit } = req.query;
     const filter = {};
+
+    const pageNum = parseInt(page) || 1;
+    const limitNum = parseInt(limit) || 10;
 
     if (today === 'true') {
       const startOfDay = new Date();
@@ -16,7 +19,7 @@ router.get('/', authRequired, requireAdmin, async (req, res) => {
       filter.date = { $gte: startOfDay };
     }
 
-    const logs = await AccessLog.find(filter).sort({ date: -1 }).limit(200);
+    const logs = await AccessLog.find(filter).sort({ date: -1 }).limit(limitNum).skip((pageNum - 1) * limitNum);
     return res.json({ logs });
   } catch (err) {
     return res.status(500).json({ message: 'Error obteniendo access logs', error: String(err?.message || err) });
