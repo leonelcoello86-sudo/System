@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import { pathToFileURL } from 'url';
@@ -10,15 +11,22 @@ import { accessLogsRouter } from './src/routes/access-logs.routes.js';
 import { systemAuditRouter } from './src/routes/system-audit.routes.js';
 import { assetsRouter } from './src/routes/assets.routes.js';
 import { adminRouter } from './src/routes/admin.routes.js';
+import { globalLimiter } from './src/middleware/rateLimiter.js';
+import { errorHandler } from './src/middleware/errorHandler.js';
+import { mongoSanitize } from './src/middleware/mongoSanitize.js';
 
 dotenv.config();
 
 export function createApp() {
   const app = express();
 
+  app.use(helmet());
+
   const corsOrigins = process.env.CORS_ORIGINS
     ? process.env.CORS_ORIGINS.split(',').map((s) => s.trim())
     : ['http://localhost:5173', 'http://127.0.0.1:5173'];
+
+  const isProduction = process.env.NODE_ENV === 'production';
 
   app.use(cors({
     origin: (origin, callback) => {
@@ -27,10 +35,16 @@ export function createApp() {
       }
 
       const normalizedOrigin = origin.trim();
-      const localhostRegex = /^https?:\/\/(?:127\.0\.0\.1|localhost)(?::\d+)?$/;
 
-      if (corsOrigins.includes(normalizedOrigin) || localhostRegex.test(normalizedOrigin)) {
+      if (corsOrigins.includes(normalizedOrigin)) {
         return callback(null, true);
+      }
+
+      if (!isProduction) {
+        const localhostRegex = /^https?:\/\/(?:127\.0\.0\.1|localhost)(?::\d+)?$/;
+        if (localhostRegex.test(normalizedOrigin)) {
+          return callback(null, true);
+        }
       }
 
       return callback(new Error('CORS policy: access denied'));
@@ -38,13 +52,19 @@ export function createApp() {
     credentials: true
   }));
 
+  app.use(globalLimiter);
   app.use(express.json({ limit: '1mb' }));
+  app.use(mongoSanitize);
 
-  app.get('/health', (req, res) => res.status(200).json({
-    status: 'ok',
-    service: 'tactical-control-backend',
-    uptime: Number(process.uptime().toFixed(2))
-  }));
+  app.get('/health', async (req, res) => {
+    const dbStatus = mongoose.connection.readyState === 1 ? 'connected' : 'disconnected';
+    return res.status(200).json({
+      status: dbStatus === 'connected' ? 'ok' : 'degraded',
+      service: 'tactical-control-backend',
+      db: dbStatus,
+      uptime: Number(process.uptime().toFixed(2))
+    });
+  });
 
   app.use('/api/auth', authRouter);
   app.use('/api/users', usersRouter);
@@ -52,6 +72,8 @@ export function createApp() {
   app.use('/api/system-audit', systemAuditRouter);
   app.use('/api/assets', assetsRouter);
   app.use('/api', adminRouter);
+
+  app.use(errorHandler);
 
   return app;
 }

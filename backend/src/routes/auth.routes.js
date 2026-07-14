@@ -5,14 +5,13 @@ import bcrypt from 'bcrypt';
 import { User } from '../models/User.js';
 import { AccessLog } from '../models/AccessLog.js';
 import { SystemAudit } from '../models/SystemAudit.js';
+import { loginLimiter } from '../middleware/rateLimiter.js';
+import { nowTimeString } from '../utils/time.js';
+import { logError } from '../utils/logger.js';
 
 const router = Router();
 
-function nowTimeString() {
-  return new Date().toLocaleTimeString('es-VE', { hour12: false });
-}
-
-router.post('/login', async (req, res) => {
+router.post('/login', loginLimiter, async (req, res) => {
   try {
     const { email, password } = req.body || {};
     const normalizedEmail = String(email || '').trim().toLowerCase();
@@ -54,9 +53,9 @@ router.post('/login', async (req, res) => {
       user: { email: user.email, role: user.role }
     });
   } catch (err) {
-    return res.status(500).json({ message: 'Error en login', error: String(err?.message || err) });
+    logError(`Login error: ${err?.message || err}`);
+    return res.status(500).json({ message: 'Error en login' });
   }
 });
 
 export { router as authRouter };
-

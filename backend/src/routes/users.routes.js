@@ -4,12 +4,11 @@ import bcrypt from 'bcrypt';
 import { User } from '../models/User.js';
 import { SystemAudit } from '../models/SystemAudit.js';
 import { authRequired, requireAdmin } from '../middleware/authRequired.js';
+import { nowTimeString } from '../utils/time.js';
+import { validatePassword } from '../utils/passwordPolicy.js';
+import { logError } from '../utils/logger.js';
 
 const router = Router();
-
-function nowTimeString() {
-  return new Date().toLocaleTimeString('es-VE', { hour12: false });
-}
 
 router.post('/', authRequired, requireAdmin, async (req, res) => {
   try {
@@ -18,6 +17,11 @@ router.post('/', authRequired, requireAdmin, async (req, res) => {
 
     if (!normalizedEmail || !password) {
       return res.status(400).json({ message: 'email y password requeridos' });
+    }
+
+    const passwordCheck = validatePassword(password);
+    if (!passwordCheck.valid) {
+      return res.status(400).json({ message: passwordCheck.message });
     }
 
     const exists = await User.findOne({ email: normalizedEmail });
@@ -41,14 +45,14 @@ router.post('/', authRequired, requireAdmin, async (req, res) => {
         severity: 'Info'
       });
     } catch (e) {
-      // ignore audit errors
+      logError(`Audit error creating user: ${e?.message || e}`);
     }
 
     return res.status(201).json({ message: 'Usuario creado', user: { email: normalizedEmail, role: 'user' } });
   } catch (err) {
-    return res.status(500).json({ message: 'Error creando usuario', error: String(err?.message || err) });
+    logError(`Error creating user: ${err?.message || err}`);
+    return res.status(500).json({ message: 'Error creando usuario' });
   }
 });
 
 export { router as usersRouter };
-

@@ -16,9 +16,10 @@ describe('health endpoint', () => {
 
       expect(response.status).toBe(200);
       expect(payload).toEqual(expect.objectContaining({
-        status: 'ok',
         service: 'tactical-control-backend',
       }));
+      expect(['ok', 'degraded']).toContain(payload.status);
+      expect(['connected', 'disconnected']).toContain(payload.db);
       expect(typeof payload.uptime).toBe('number');
     } finally {
       await new Promise((resolve, reject) => server.close((error) => error ? reject(error) : resolve()));

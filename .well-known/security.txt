@@ -1,0 +1,3 @@
+Contact: https://github.com/anomalyco/opencode/issues
+Preferred-Languages: es, en
+Policy: https://github.com/anomalyco/opencode/security/policy

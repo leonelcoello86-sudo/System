@@ -1,14 +1,10 @@
 import { Asset } from '../models/Asset.js';
 import { SystemAudit } from '../models/SystemAudit.js';
 import { logInfo, logError } from '../utils/logger.js';
+import { nowTimeString } from '../utils/time.js';
 
 const validIcons = ['soldado', 'vehiculo', 'dron'];
 
-/**
- * Convierte valores de coordenadas o métricas en número.
- * @param {unknown} value
- * @returns {number|null}
- */
 export function parseNumber(value) {
   if (value === undefined || value === null || value === '') return null;
   const normalized = String(value).trim().replace(',', '.');
@@ -16,11 +12,6 @@ export function parseNumber(value) {
   return Number.isNaN(parsed) ? null : parsed;
 }
 
-/**
- * Valida que la entrada del asset tenga los campos mínimos requeridos.
- * @param {Record<string, unknown>} payload
- * @returns {{ valid: boolean, message: string }}
- */
 export function validateAssetPayload(payload) {
   const { type, name, status, icon, latitude, longitude } = payload || {};
 
@@ -41,11 +32,6 @@ export function validateAssetPayload(payload) {
   return { valid: true };
 }
 
-/**
- * Construye el objeto asset listos para guardar.
- * @param {Record<string, unknown>} payload
- * @returns {Record<string, unknown>}
- */
 export function buildAssetData(payload) {
   const { type, name, status, icon, battery, fuel, personnel, latitude, longitude } = payload || {};
   const latNum = parseNumber(latitude);
@@ -74,12 +60,6 @@ export function buildAssetData(payload) {
   return assetData;
 }
 
-/**
- * Guarda un asset nuevo o actualiza el existente y crea un registro de auditoría.
- * @param {Record<string, unknown>} payload
- * @param {string} actor
- * @returns {Promise<{ message: string }>} 
- */
 export async function saveAsset(payload, actor) {
   const assetData = buildAssetData(payload);
   const { name } = assetData;
@@ -89,7 +69,7 @@ export async function saveAsset(payload, actor) {
     if (existing) {
       await Asset.updateOne({ _id: existing._id }, assetData);
       await SystemAudit.create({
-        time: new Date().toLocaleTimeString('es-VE', { hour12: false }),
+        time: nowTimeString(),
         event: `Activo actualizado por ${actor}: ${name}`,
         severity: 'Info'
       });
@@ -99,7 +79,7 @@ export async function saveAsset(payload, actor) {
 
     await Asset.create(assetData);
     await SystemAudit.create({
-      time: new Date().toLocaleTimeString('es-VE', { hour12: false }),
+      time: nowTimeString(),
       event: `Activo creado por ${actor}: ${name}`,
       severity: 'Info'
     });

@@ -13,6 +13,7 @@
     "backend:docs": "cd backend && npm run docs"
   },
   "dependencies": {
+    "dompurify": "^3.4.12",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.499.0",
     "react": "^18.3.1",

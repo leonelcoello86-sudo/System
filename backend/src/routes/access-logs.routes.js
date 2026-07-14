@@ -2,6 +2,7 @@ import { Router } from 'express';
 
 import { authRequired, requireAdmin } from '../middleware/authRequired.js';
 import { AccessLog } from '../models/AccessLog.js';
+import { logError } from '../utils/logger.js';
 
 const router = Router();
 
@@ -11,7 +12,7 @@ router.get('/', authRequired, requireAdmin, async (req, res) => {
     const filter = {};
 
     const pageNum = parseInt(page) || 1;
-    const limitNum = parseInt(limit) || 10;
+    const limitNum = Math.min(parseInt(limit) || 10, 100);
 
     if (today === 'true') {
       const startOfDay = new Date();
@@ -22,9 +23,9 @@ router.get('/', authRequired, requireAdmin, async (req, res) => {
     const logs = await AccessLog.find(filter).sort({ date: -1 }).limit(limitNum).skip((pageNum - 1) * limitNum);
     return res.json({ logs });
   } catch (err) {
-    return res.status(500).json({ message: 'Error obteniendo access logs', error: String(err?.message || err) });
+    logError(`Error getting access logs: ${err?.message || err}`);
+    return res.status(500).json({ message: 'Error obteniendo access logs' });
   }
 });
 
 export { router as accessLogsRouter };
-
