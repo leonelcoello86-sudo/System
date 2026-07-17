@@ -22,7 +22,8 @@ function SystemAudit() {
         return res.json();
       })
       .then((data) => {
-        setAudits(data.audits || []);
+        const list = data.audits || [];
+        setAudits(list.slice(0, 10));
       })
       .catch((e) => setError(String(e?.message || e)));
   }, []);
