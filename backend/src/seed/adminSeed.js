@@ -1,6 +1,12 @@
 import bcrypt from 'bcrypt';
 import { User } from '../models/User.js';
+import { logInfo } from '../utils/logger.js';
 
+/**
+ * Crea el usuario administrador inicial si no existe.
+ * Usa las variables de entorno ADMIN_EMAIL y ADMIN_PASSWORD.
+ * Si el usuario ya existe o las variables no están definidas, no realiza ninguna acción.
+ */
 export async function ensureAdminUser() {
   const { ADMIN_EMAIL, ADMIN_PASSWORD } = process.env;
   if (!ADMIN_EMAIL || !ADMIN_PASSWORD) return;
@@ -16,6 +22,6 @@ export async function ensureAdminUser() {
     role: 'admin'
   });
 
-  console.log('Admin user seeded:', ADMIN_EMAIL);
+  logInfo(`Admin user seeded: ${ADMIN_EMAIL}`);
 }
 

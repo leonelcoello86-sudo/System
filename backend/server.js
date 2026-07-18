@@ -17,6 +17,11 @@ import { mongoSanitize } from './src/middleware/mongoSanitize.js';
 
 dotenv.config();
 
+/**
+ * Crea y configura la aplicación Express con middleware, rutas y manejo de errores.
+ * No conecta a MongoDB ni inicia el servidor; solo arma la app.
+ * @returns {import('express').Application} Instancia de Express configurada.
+ */
 export function createApp() {
   const app = express();
 
@@ -78,6 +83,13 @@ export function createApp() {
   return app;
 }
 
+/**
+ * Inicia el servidor Express, conecta a MongoDB y ejecuta el seed del admin.
+ * @param {number} [port=5000] - Puerto en el que escucha el servidor.
+ * @param {object} [options={}] - Opciones de configuración.
+ * @param {boolean} [options.skipDbConnection=false] - Si es true, omite la conexión a MongoDB (útil para tests).
+ * @returns {Promise<import('http').Server>} Instancia del servidor HTTP.
+ */
 export async function startServer(port = process.env.PORT || 5000, options = {}) {
   const app = createApp();
 

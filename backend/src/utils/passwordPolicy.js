@@ -1,5 +1,12 @@
+/** @description Expresión regular que valida contraseñas con minúscula, mayúscula, dígito y carácter especial. */
 const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/;
 
+/**
+ * Valida que una contraseña cumpla con la política de seguridad del sistema.
+ * Requiere mínimo 8 caracteres, al menos una minúscula, una mayúscula, un número y un carácter especial.
+ * @param {string} password - Contraseña a validar.
+ * @returns {{ valid: boolean, message: string }} Resultado de la validación.
+ */
 export function validatePassword(password) {
   if (!password || typeof password !== 'string') {
     return { valid: false, message: 'Contraseña requerida' };

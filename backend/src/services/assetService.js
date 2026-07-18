@@ -5,6 +5,11 @@ import { nowTimeString } from '../utils/time.js';
 
 const validIcons = ['soldado', 'vehiculo', 'dron'];
 
+/**
+ * Convierte un valor a número. Acepta comas como separador decimal.
+ * @param {*} value - Valor a convertir.
+ * @returns {number|null} Número convertido o null si no es válido.
+ */
 export function parseNumber(value) {
   if (value === undefined || value === null || value === '') return null;
   const normalized = String(value).trim().replace(',', '.');
@@ -12,6 +17,11 @@ export function parseNumber(value) {
   return Number.isNaN(parsed) ? null : parsed;
 }
 
+/**
+ * Valida que el payload de un asset contenga todos los campos requeridos y sean válidos.
+ * @param {object} payload - Datos del activo a validar.
+ * @returns {{ valid: boolean, message: string }} Resultado de la validación.
+ */
 export function validateAssetPayload(payload) {
   const { type, name, status, icon, latitude, longitude } = payload || {};
 
@@ -32,6 +42,12 @@ export function validateAssetPayload(payload) {
   return { valid: true };
 }
 
+/**
+ * Construye el objeto de datos normalizado para un asset.
+ * Limita battery/fuel al rango 0-100 y asegura que personnel sea >= 0.
+ * @param {object} payload - Datos crudos del activo.
+ * @returns {object} Objeto normalizado listo para persistir en MongoDB.
+ */
 export function buildAssetData(payload) {
   const { type, name, status, icon, battery, fuel, personnel, latitude, longitude } = payload || {};
   const latNum = parseNumber(latitude);
@@ -60,6 +76,13 @@ export function buildAssetData(payload) {
   return assetData;
 }
 
+/**
+ * Guarda o actualiza un asset en la base de datos y registra la acción en la auditoría del sistema.
+ * Si ya existe un asset con el mismo nombre, lo actualiza; de lo contrario, lo crea.
+ * @param {object} payload - Datos crudos del activo.
+ * @param {string} actor - Email del usuario que realiza la operación.
+ * @returns {Promise<{ message: string }>} Resultado de la operación.
+ */
 export async function saveAsset(payload, actor) {
   const assetData = buildAssetData(payload);
   const { name } = assetData;
