@@ -320,7 +320,7 @@ function ContentManagement() {
               </tr>
             </thead>
             <tbody className="divide-y divide-white/10">
-              {assets.map((a) => (
+              {assets.slice(0, 10).map((a) => (
                 <tr key={a._id} className="hover:bg-white/5">
                   <td className="px-4 py-3 font-mono text-cyan-100">{a.name}</td>
                   <td className="px-4 py-3">{a.type}</td>
