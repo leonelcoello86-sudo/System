@@ -118,7 +118,7 @@ function MapView() {
         </section>
 
         <div className="max-h-[640px] overflow-y-auto">
-          <TelemetryPanel assets={assets} loading={loading} error={error} />
+          <TelemetryPanel assets={assets.slice(0, 3)} loading={loading} error={error} />
         </div>
       </div>
       <section className="rounded-[30px] border border-white/10 bg-[#06121c]/80 p-6 shadow-glass backdrop-blur-xl">
