@@ -1,4 +1,4 @@
-function TelemetryPanel({ assets = [], loading, error }) {
+function TelemetryPanel({ assets = [], loading, error, onNext, onPrev, currentPage = 0, totalPages = 1 }) {
   return (
     <aside className="space-y-6 rounded-[30px] border border-white/10 bg-white/5 p-6 shadow-glass backdrop-blur-xl">
       <div className="mb-4 rounded-3xl border border-cyan-300/15 bg-[#08131a]/90 px-4 py-3 text-sm uppercase tracking-[0.18em] text-cyan-200">
@@ -46,6 +46,30 @@ function TelemetryPanel({ assets = [], loading, error }) {
             </div>
           </div>
         ))}
+      </div>
+      {/* Pagination controls */}
+      <div className="mt-4 flex items-center justify-between">
+        <button
+          type="button"
+          onClick={onPrev}
+          disabled={currentPage <= 0 || loading}
+          className="rounded-2xl bg-[#0b1117]/90 px-4 py-2 text-sm font-semibold text-slate-200 disabled:opacity-40"
+        >
+          Atrás
+        </button>
+
+        <div className="text-sm text-slate-400">
+          Página {currentPage + 1} / {totalPages}
+        </div>
+
+        <button
+          type="button"
+          onClick={onNext}
+          disabled={currentPage >= totalPages - 1 || loading}
+          className="rounded-2xl bg-cyan-400 px-4 py-2 text-sm font-semibold text-[#050505] disabled:opacity-40"
+        >
+          Siguiente
+        </button>
       </div>
     </aside>
   );

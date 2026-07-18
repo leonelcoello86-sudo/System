@@ -8,8 +8,11 @@ const defaultCenter = [11.40769, -69.67822];
 
 function MapView() {
   const [assets, setAssets] = useState([]);
+  const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  const PAGE_SIZE = 3;
 
   const apiBaseUrl = import.meta.env.VITE_API_URL || '/api';
 
@@ -38,6 +41,11 @@ function MapView() {
   useEffect(() => {
     fetchAssets();
   }, []);
+
+  useEffect(() => {
+    // reset page when assets update to avoid out-of-range pages
+    setPage(0);
+  }, [assets]);
 
   const mapCenter = useMemo(() => {
     if (assets.length > 0) {
@@ -118,7 +126,15 @@ function MapView() {
         </section>
 
         <div className="max-h-[640px] overflow-y-auto">
-          <TelemetryPanel assets={assets.slice(0, 3)} loading={loading} error={error} />
+          <TelemetryPanel
+            assets={assets.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE)}
+            loading={loading}
+            error={error}
+            onNext={() => setPage((p) => p + 1)}
+            onPrev={() => setPage((p) => p - 1)}
+            currentPage={page}
+            totalPages={Math.max(1, Math.ceil(assets.length / PAGE_SIZE))}
+          />
         </div>
       </div>
       <section className="rounded-[30px] border border-white/10 bg-[#06121c]/80 p-6 shadow-glass backdrop-blur-xl">
