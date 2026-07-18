@@ -3,6 +3,9 @@ import { useEffect, useState } from 'react';
 function AccessLog() {
   const [entries, setEntries] = useState([]);
   const [error, setError] = useState('');
+  const [page, setPage] = useState(0);
+
+  const PAGE_SIZE = 10;
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -27,6 +30,12 @@ function AccessLog() {
       .catch((e) => setError(String(e?.message || e)));
   }, []);
 
+  useEffect(() => {
+    setPage(0);
+  }, [entries.length]);
+
+  const visibleEntries = entries.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
+
   return (
     <section className="rounded-[30px] border border-white/10 bg-[#06121c]/80 p-6 shadow-glass backdrop-blur-xl">
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -50,7 +59,7 @@ function AccessLog() {
             </tr>
           </thead>
           <tbody className="divide-y divide-white/10">
-            {entries.map((entry, index) => (
+            {visibleEntries.map((entry, index) => (
               <tr key={index} className="hover:bg-white/5">
                 <td className="whitespace-nowrap px-4 py-3 font-mono text-cyan-100">{entry.ip}</td>
                 <td className="px-4 py-3">{entry.user}</td>
@@ -62,6 +71,30 @@ function AccessLog() {
             ))}
           </tbody>
         </table>
+      </div>
+
+      <div className="mt-4 flex items-center justify-between">
+        <button
+          type="button"
+          onClick={() => setPage((p) => Math.max(0, p - 1))}
+          disabled={page <= 0}
+          className="rounded-2xl bg-[#0b1117]/90 px-4 py-2 text-sm font-semibold text-slate-200 disabled:opacity-40"
+        >
+          Atrás
+        </button>
+
+        <div className="text-sm text-slate-400">
+          Página {page + 1} / {Math.max(1, Math.ceil(entries.length / PAGE_SIZE))}
+        </div>
+
+        <button
+          type="button"
+          onClick={() => setPage((p) => p + 1)}
+          disabled={page >= Math.max(0, Math.ceil(entries.length / PAGE_SIZE) - 1)}
+          className="rounded-2xl bg-cyan-400 px-4 py-2 text-sm font-semibold text-[#050505] disabled:opacity-40"
+        >
+          Siguiente
+        </button>
       </div>
     </section>
   );

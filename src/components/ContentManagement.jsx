@@ -27,8 +27,10 @@ function ContentManagement() {
   const [error, setError] = useState('');
   const [assets, setAssets] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(0);
 
   const apiBaseUrl = import.meta.env.VITE_API_URL || '/api';
+  const PAGE_SIZE = 10;
 
   const fetchAssets = async () => {
     const token = localStorage.getItem('token');
@@ -55,6 +57,12 @@ function ContentManagement() {
     fetchAssets();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    setPage(0);
+  }, [assets.length]);
+
+  const visibleAssets = assets.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
 
   const resetForm = () => {
     setAsset(defaultAsset);
@@ -320,7 +328,7 @@ function ContentManagement() {
               </tr>
             </thead>
             <tbody className="divide-y divide-white/10">
-              {assets.slice(0, 10).map((a) => (
+              {visibleAssets.map((a) => (
                 <tr key={a._id} className="hover:bg-white/5">
                   <td className="px-4 py-3 font-mono text-cyan-100">{a.name}</td>
                   <td className="px-4 py-3">{a.type}</td>
@@ -354,6 +362,30 @@ function ContentManagement() {
               ))}
             </tbody>
           </table>
+        </div>
+
+        <div className="mt-4 flex items-center justify-between">
+          <button
+            type="button"
+            onClick={() => setPage((p) => Math.max(0, p - 1))}
+            disabled={page <= 0 || loading}
+            className="rounded-2xl bg-[#0b1117]/90 px-4 py-2 text-sm font-semibold text-slate-200 disabled:opacity-40"
+          >
+            Atrás
+          </button>
+
+          <div className="text-sm text-slate-400">
+            Página {page + 1} / {Math.max(1, Math.ceil(assets.length / PAGE_SIZE))}
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setPage((p) => p + 1)}
+            disabled={page >= Math.max(0, Math.ceil(assets.length / PAGE_SIZE) - 1) || loading}
+            className="rounded-2xl bg-cyan-400 px-4 py-2 text-sm font-semibold text-[#050505] disabled:opacity-40"
+          >
+            Siguiente
+          </button>
         </div>
       </div>
     </section>

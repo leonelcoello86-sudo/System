@@ -3,6 +3,9 @@ import { useEffect, useState } from 'react';
 function SystemAudit() {
   const [audits, setAudits] = useState([]);
   const [error, setError] = useState('');
+  const [page, setPage] = useState(0);
+
+  const PAGE_SIZE = 10;
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -22,11 +25,16 @@ function SystemAudit() {
         return res.json();
       })
       .then((data) => {
-        const list = data.audits || [];
-        setAudits(list.slice(0, 10));
+        setAudits(data.audits || []);
       })
       .catch((e) => setError(String(e?.message || e)));
   }, []);
+
+  useEffect(() => {
+    setPage(0);
+  }, [audits.length]);
+
+  const visibleAudits = audits.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
 
   return (
     <section className="rounded-[30px] border border-white/10 bg-[#06121c]/80 p-6 shadow-glass backdrop-blur-xl">
@@ -41,7 +49,7 @@ function SystemAudit() {
       {error && <p className="mb-4 rounded-2xl bg-red-500/10 px-4 py-3 text-sm text-red-300">{error}</p>}
 
       <div className="space-y-4">
-        {audits.map((entry, index) => (
+        {visibleAudits.map((entry, index) => (
           <div
             key={entry._id || index}
             className="rounded-3xl border border-white/10 bg-[#0b1320]/90 px-5 py-4 text-sm text-slate-200 shadow-[inset_0_0_20px_rgba(0,242,255,0.05)]"
@@ -63,6 +71,30 @@ function SystemAudit() {
             <p className="mt-3 text-sm text-slate-300">{entry.event}</p>
           </div>
         ))}
+      </div>
+
+      <div className="mt-4 flex items-center justify-between">
+        <button
+          type="button"
+          onClick={() => setPage((p) => Math.max(0, p - 1))}
+          disabled={page <= 0}
+          className="rounded-2xl bg-[#0b1117]/90 px-4 py-2 text-sm font-semibold text-slate-200 disabled:opacity-40"
+        >
+          Atrás
+        </button>
+
+        <div className="text-sm text-slate-400">
+          Página {page + 1} / {Math.max(1, Math.ceil(audits.length / PAGE_SIZE))}
+        </div>
+
+        <button
+          type="button"
+          onClick={() => setPage((p) => p + 1)}
+          disabled={page >= Math.max(0, Math.ceil(audits.length / PAGE_SIZE) - 1)}
+          className="rounded-2xl bg-cyan-400 px-4 py-2 text-sm font-semibold text-[#050505] disabled:opacity-40"
+        >
+          Siguiente
+        </button>
       </div>
     </section>
   );
