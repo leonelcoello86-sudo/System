@@ -94,6 +94,72 @@
     
 
     
+        <h3 class="subsection-title">Members</h3>
+
+        
+            
+<h4 class="name" id="PASSWORD_REGEX"><span class="type-signature">(constant) </span>PASSWORD_REGEX<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Expresión regular que valida contraseñas con minúscula, mayúscula, dígito y carácter especial.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utils_passwordPolicy.js.html">utils/passwordPolicy.js</a>, <a href="utils_passwordPolicy.js.html#line2">line 2</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+    
 
     
         <h3 class="subsection-title">Methods</h3>
@@ -104,7 +170,7 @@
     
 
     
-    <h4 class="name" id="buildAssetData"><span class="type-signature"></span>buildAssetData<span class="signature">(payload)</span><span class="type-signature"> &rarr; {Record.&lt;string, unknown>}</span></h4>
+    <h4 class="name" id="authRequired"><span class="type-signature"></span>authRequired<span class="signature">(req, res, next)</span><span class="type-signature"></span></h4>
     
 
     
@@ -112,7 +178,191 @@
 
 
 <div class="description">
-    Construye el objeto asset listos para guardar.
+    Middleware que verifica la presencia y validez del token JWT en el header Authorization.Si el token es válido, decodifica el payload y lo asigna a req.user.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Petición HTTP de Express.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Respuesta HTTP de Express.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>next</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Siguiente middleware.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="middleware_authRequired.js.html">middleware/authRequired.js</a>, <a href="middleware_authRequired.js.html#line10">line 10</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="buildAssetData"><span class="type-signature"></span>buildAssetData<span class="signature">(payload)</span><span class="type-signature"> &rarr; {object}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Construye el objeto de datos normalizado para un asset.
+Limita battery/fuel al rango 0-100 y asegura que personnel sea >= 0.
 </div>
 
 
@@ -154,7 +404,7 @@
             <td class="type">
             
                 
-<span class="param-type">Record.&lt;string, unknown></span>
+<span class="param-type">object</span>
 
 
             
@@ -164,7 +414,7 @@
 
             
 
-            <td class="description last"></td>
+            <td class="description last">Datos crudos del activo.</td>
         </tr>
 
     
@@ -205,7 +455,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="assetService.js.html">assetService.js</a>, <a href="assetService.js.html#line49">line 49</a>
+        <a href="services_assetService.js.html">services/assetService.js</a>, <a href="services_assetService.js.html#line51">line 51</a>
     </li></ul></dd>
     
 
@@ -233,6 +483,10 @@
 <h5>Returns:</h5>
 
         
+<div class="param-desc">
+    Objeto normalizado listo para persistir en MongoDB.
+</div>
+
 
 
 <dl>
@@ -241,7 +495,1116 @@
     </dt>
     <dd>
         
-<span class="param-type">Record.&lt;string, unknown></span>
+<span class="param-type">object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="ensureAdminUser"><span class="type-signature"></span>ensureAdminUser<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Crea el usuario administrador inicial si no existe.Usa las variables de entorno ADMIN_EMAIL y ADMIN_PASSWORD.Si el usuario ya existe o las variables no están definidas, no realiza ninguna acción.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="seed_adminSeed.js.html">seed/adminSeed.js</a>, <a href="seed_adminSeed.js.html#line10">line 10</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="errorHandler"><span class="type-signature"></span>errorHandler<span class="signature">(err, req, res, _next)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Middleware global de manejo de errores. Registra el error en consola y retorna 500.
+En producción no expone detalles del error al cliente.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>err</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Error</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Objeto de error capturado.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Petición HTTP de Express.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Respuesta HTTP de Express.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>_next</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Siguiente middleware (no utilizado).</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="middleware_errorHandler.js.html">middleware/errorHandler.js</a>, <a href="middleware_errorHandler.js.html#line11">line 11</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="formatTimestamp"><span class="type-signature"></span>formatTimestamp<span class="signature">()</span><span class="type-signature"> &rarr; {string}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Retorna la marca de tiempo actual en formato ISO 8601.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utils_logger.js.html">utils/logger.js</a>, <a href="utils_logger.js.html#line5">line 5</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Fecha/hora en formato ISO (ej. "2026-07-18T12:00:00.000Z").
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">string</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="logError"><span class="type-signature"></span>logError<span class="signature">(message)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Registra un mensaje de error en consola.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>message</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Mensaje de error a registrar.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utils_logger.js.html">utils/logger.js</a>, <a href="utils_logger.js.html#line29">line 29</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="logInfo"><span class="type-signature"></span>logInfo<span class="signature">(message)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Registra un mensaje de nivel informativo en consola.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>message</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Mensaje a registrar.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utils_logger.js.html">utils/logger.js</a>, <a href="utils_logger.js.html#line13">line 13</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="logWarning"><span class="type-signature"></span>logWarning<span class="signature">(message)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Registra un mensaje de advertencia en consola.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>message</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Mensaje a registrar.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utils_logger.js.html">utils/logger.js</a>, <a href="utils_logger.js.html#line21">line 21</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="mongoSanitize"><span class="type-signature"></span>mongoSanitize<span class="signature">(req, res, next)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Middleware que sanitiza req.body, req.query y req.params contra inyección NoSQL.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Petición HTTP de Express.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Respuesta HTTP de Express.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>next</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Siguiente middleware.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="middleware_mongoSanitize.js.html">middleware/mongoSanitize.js</a>, <a href="middleware_mongoSanitize.js.html#line26">line 26</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="nowTimeString"><span class="type-signature"></span>nowTimeString<span class="signature">()</span><span class="type-signature"> &rarr; {string}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Retorna la hora actual en formato de 24 horas (HH:MM:SS) usando la zona horaria de Venezuela.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utils_time.js.html">utils/time.js</a>, <a href="utils_time.js.html#line5">line 5</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Hora en formato "HH:MM:SS".
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">string</span>
 
 
     </dd>
@@ -267,7 +1630,7 @@
 
 
 <div class="description">
-    Convierte valores de coordenadas o métricas en número.
+    Convierte un valor a número. Acepta comas como separador decimal.
 </div>
 
 
@@ -309,7 +1672,7 @@
             <td class="type">
             
                 
-<span class="param-type">unknown</span>
+<span class="param-type">*</span>
 
 
             
@@ -319,7 +1682,7 @@
 
             
 
-            <td class="description last"></td>
+            <td class="description last">Valor a convertir.</td>
         </tr>
 
     
@@ -360,7 +1723,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="assetService.js.html">assetService.js</a>, <a href="assetService.js.html#line12">line 12</a>
+        <a href="services_assetService.js.html">services/assetService.js</a>, <a href="services_assetService.js.html#line13">line 13</a>
     </li></ul></dd>
     
 
@@ -388,6 +1751,10 @@
 <h5>Returns:</h5>
 
         
+<div class="param-desc">
+    Número convertido o null si no es válido.
+</div>
+
 
 
 <dl>
@@ -417,6 +1784,349 @@
     
 
     
+    <h4 class="name" id="requireAdmin"><span class="type-signature"></span>requireAdmin<span class="signature">(req, res, next)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Middleware que verifica que el usuario autenticado tenga rol de administrador.Debe usarse después de authRequired.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Petición HTTP (debe tener req.user.role).</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Respuesta HTTP de Express.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>next</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Siguiente middleware.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="middleware_authRequired.js.html">middleware/authRequired.js</a>, <a href="middleware_authRequired.js.html#line34">line 34</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="sanitizeObject"><span class="type-signature"></span>sanitizeObject<span class="signature">(obj)</span><span class="type-signature"> &rarr; {object}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Elimina recursivamente del objeto las keys que inician con $ o contienen puntos,
+para prevenir inyección NoSQL.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>obj</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Objeto a sanitizar (se modifica in-place).</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="middleware_mongoSanitize.js.html">middleware/mongoSanitize.js</a>, <a href="middleware_mongoSanitize.js.html#line7">line 7</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    El mismo objeto sanitizado.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
     <h4 class="name" id="saveAsset"><span class="type-signature"></span>saveAsset<span class="signature">(payload, actor)</span><span class="type-signature"> &rarr; {Promise.&lt;{message: string}>}</span></h4>
     
 
@@ -425,7 +2135,8 @@
 
 
 <div class="description">
-    Guarda un asset nuevo o actualiza el existente y crea un registro de auditoría.
+    Guarda o actualiza un asset en la base de datos y registra la acción en la auditoría del sistema.
+Si ya existe un asset con el mismo nombre, lo actualiza; de lo contrario, lo crea.
 </div>
 
 
@@ -467,7 +2178,7 @@
             <td class="type">
             
                 
-<span class="param-type">Record.&lt;string, unknown></span>
+<span class="param-type">object</span>
 
 
             
@@ -477,7 +2188,7 @@
 
             
 
-            <td class="description last"></td>
+            <td class="description last">Datos crudos del activo.</td>
         </tr>
 
     
@@ -500,7 +2211,7 @@
 
             
 
-            <td class="description last"></td>
+            <td class="description last">Email del usuario que realiza la operación.</td>
         </tr>
 
     
@@ -541,7 +2252,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="assetService.js.html">assetService.js</a>, <a href="assetService.js.html#line83">line 83</a>
+        <a href="services_assetService.js.html">services/assetService.js</a>, <a href="services_assetService.js.html#line86">line 86</a>
     </li></ul></dd>
     
 
@@ -569,6 +2280,10 @@
 <h5>Returns:</h5>
 
         
+<div class="param-desc">
+    Resultado de la operación.
+</div>
+
 
 
 <dl>
@@ -603,7 +2318,7 @@
 
 
 <div class="description">
-    Valida que la entrada del asset tenga los campos mínimos requeridos.
+    Valida que el payload de un asset contenga todos los campos requeridos y sean válidos.
 </div>
 
 
@@ -645,7 +2360,7 @@
             <td class="type">
             
                 
-<span class="param-type">Record.&lt;string, unknown></span>
+<span class="param-type">object</span>
 
 
             
@@ -655,7 +2370,7 @@
 
             
 
-            <td class="description last"></td>
+            <td class="description last">Datos del activo a validar.</td>
         </tr>
 
     
@@ -696,7 +2411,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="assetService.js.html">assetService.js</a>, <a href="assetService.js.html#line24">line 24</a>
+        <a href="services_assetService.js.html">services/assetService.js</a>, <a href="services_assetService.js.html#line25">line 25</a>
     </li></ul></dd>
     
 
@@ -724,6 +2439,170 @@
 <h5>Returns:</h5>
 
         
+<div class="param-desc">
+    Resultado de la validación.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="validatePassword"><span class="type-signature"></span>validatePassword<span class="signature">(password)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Valida que una contraseña cumpla con la política de seguridad del sistema.
+Requiere mínimo 8 caracteres, al menos una minúscula, una mayúscula, un número y un carácter especial.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>password</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Contraseña a validar.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utils_passwordPolicy.js.html">utils/passwordPolicy.js</a>, <a href="utils_passwordPolicy.js.html#line10">line 10</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Resultado de la validación.
+</div>
+
 
 
 <dl>
@@ -760,13 +2639,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#buildAssetData">buildAssetData</a></li><li><a href="global.html#parseNumber">parseNumber</a></li><li><a href="global.html#saveAsset">saveAsset</a></li><li><a href="global.html#validateAssetPayload">validateAssetPayload</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#PASSWORD_REGEX">PASSWORD_REGEX</a></li><li><a href="global.html#authRequired">authRequired</a></li><li><a href="global.html#buildAssetData">buildAssetData</a></li><li><a href="global.html#ensureAdminUser">ensureAdminUser</a></li><li><a href="global.html#errorHandler">errorHandler</a></li><li><a href="global.html#formatTimestamp">formatTimestamp</a></li><li><a href="global.html#logError">logError</a></li><li><a href="global.html#logInfo">logInfo</a></li><li><a href="global.html#logWarning">logWarning</a></li><li><a href="global.html#mongoSanitize">mongoSanitize</a></li><li><a href="global.html#nowTimeString">nowTimeString</a></li><li><a href="global.html#parseNumber">parseNumber</a></li><li><a href="global.html#requireAdmin">requireAdmin</a></li><li><a href="global.html#sanitizeObject">sanitizeObject</a></li><li><a href="global.html#saveAsset">saveAsset</a></li><li><a href="global.html#validateAssetPayload">validateAssetPayload</a></li><li><a href="global.html#validatePassword">validatePassword</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Thu Jul 02 2026 23:54:23 GMT-0400 (hora de Venezuela)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Sat Jul 18 2026 18:19:33 GMT-0400 (hora de Venezuela)
 </footer>
 
 <script> prettyPrint(); </script>
