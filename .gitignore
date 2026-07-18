@@ -17,3 +17,6 @@ Thumbs.db
 # Vite cache
 .vite/
 
+# Auto-generated docs
+backend/docs/
+
