@@ -2,6 +2,7 @@ import { Asset } from '../models/Asset.js';
 import { SystemAudit } from '../models/SystemAudit.js';
 import { logInfo, logError } from '../utils/logger.js';
 import { nowTimeString } from '../utils/time.js';
+import { MAX_LENGTHS, sanitizeString } from '../utils/inputValidation.js';
 
 const validIcons = ['soldado', 'vehiculo', 'dron'];
 
@@ -29,6 +30,18 @@ export function validateAssetPayload(payload) {
     return { valid: false, message: 'type, name, status, icon, latitude y longitude requeridos' };
   }
 
+  if (String(name).trim().length > MAX_LENGTHS.name) {
+    return { valid: false, message: `name no puede exceder ${MAX_LENGTHS.name} caracteres` };
+  }
+
+  if (String(type).trim().length > MAX_LENGTHS.type) {
+    return { valid: false, message: `type no puede exceder ${MAX_LENGTHS.type} caracteres` };
+  }
+
+  if (String(status).trim().length > MAX_LENGTHS.status) {
+    return { valid: false, message: `status no puede exceder ${MAX_LENGTHS.status} caracteres` };
+  }
+
   if (!validIcons.includes(String(icon))) {
     return { valid: false, message: 'icon inválido' };
   }
@@ -54,10 +67,10 @@ export function buildAssetData(payload) {
   const lonNum = parseNumber(longitude);
 
   const assetData = {
-    type,
-    name,
-    status,
-    icon,
+    type: sanitizeString(type),
+    name: sanitizeString(name),
+    status: sanitizeString(status),
+    icon: sanitizeString(icon),
     latitude: latNum,
     longitude: lonNum,
     battery: null,

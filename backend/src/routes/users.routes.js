@@ -6,7 +6,8 @@ import { SystemAudit } from '../models/SystemAudit.js';
 import { authRequired, requireAdmin } from '../middleware/authRequired.js';
 import { nowTimeString } from '../utils/time.js';
 import { validatePassword } from '../utils/passwordPolicy.js';
-import { logError } from '../utils/logger.js';
+import { logError, logJson } from '../utils/logger.js';
+import { validateEmail } from '../utils/inputValidation.js';
 
 const router = Router();
 
@@ -17,6 +18,11 @@ router.post('/', authRequired, requireAdmin, async (req, res) => {
 
     if (!normalizedEmail || !password) {
       return res.status(400).json({ message: 'email y password requeridos' });
+    }
+
+    const emailCheck = validateEmail(normalizedEmail);
+    if (!emailCheck.valid) {
+      return res.status(400).json({ message: emailCheck.message });
     }
 
     const passwordCheck = validatePassword(password);
@@ -50,8 +56,8 @@ router.post('/', authRequired, requireAdmin, async (req, res) => {
 
     return res.status(201).json({ message: 'Usuario creado', user: { email: normalizedEmail, role: 'user' } });
   } catch (err) {
-    logError(`Error creating user: ${err?.message || err}`);
-    return res.status(500).json({ message: 'Error creando usuario' });
+    logJson('error', `Error creating user: ${err?.message || err}`, { correlationId: req.correlationId });
+    return res.status(500).json({ message: 'Error creando usuario', correlationId: req.correlationId });
   }
 });
 

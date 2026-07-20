@@ -7,7 +7,8 @@ import { AccessLog } from '../models/AccessLog.js';
 import { SystemAudit } from '../models/SystemAudit.js';
 import { loginLimiter } from '../middleware/rateLimiter.js';
 import { nowTimeString } from '../utils/time.js';
-import { logError } from '../utils/logger.js';
+import { logJson } from '../utils/logger.js';
+import { validateEmail } from '../utils/inputValidation.js';
 
 const router = Router();
 
@@ -18,6 +19,11 @@ router.post('/login', loginLimiter, async (req, res) => {
 
     if (!normalizedEmail || !password) {
       return res.status(400).json({ message: 'Email y password requeridos' });
+    }
+
+    const emailCheck = validateEmail(normalizedEmail);
+    if (!emailCheck.valid) {
+      return res.status(400).json({ message: emailCheck.message });
     }
 
     const user = await User.findOne({ email: normalizedEmail });
@@ -53,8 +59,8 @@ router.post('/login', loginLimiter, async (req, res) => {
       user: { email: user.email, role: user.role }
     });
   } catch (err) {
-    logError(`Login error: ${err?.message || err}`);
-    return res.status(500).json({ message: 'Error en login' });
+    logJson('error', `Login error: ${err?.message || err}`, { correlationId: req.correlationId });
+    return res.status(500).json({ message: 'Error en login', correlationId: req.correlationId });
   }
 });
 
