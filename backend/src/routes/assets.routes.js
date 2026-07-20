@@ -6,7 +6,7 @@ import { Asset } from '../models/Asset.js';
 import { SystemAudit } from '../models/SystemAudit.js';
 import { validateAssetPayload, buildAssetData, saveAsset } from '../services/assetService.js';
 import { nowTimeString } from '../utils/time.js';
-import { logError } from '../utils/logger.js';
+import { logError, logJson } from '../utils/logger.js';
 
 const router = Router();
 
@@ -15,8 +15,8 @@ router.get('/summary', authRequired, async (req, res) => {
     const total = await Asset.countDocuments({});
     return res.json({ total });
   } catch (err) {
-    logError(`Error getting asset summary: ${err?.message || err}`);
-    return res.status(500).json({ message: 'Error obteniendo resumen de assets' });
+    logJson('error', `Error getting asset summary: ${err?.message || err}`, { correlationId: req.correlationId });
+    return res.status(500).json({ message: 'Error obteniendo resumen de assets', correlationId: req.correlationId });
   }
 });
 
@@ -25,8 +25,8 @@ router.get('/', authRequired, async (req, res) => {
     const assets = await Asset.find({}).limit(500);
     return res.json({ assets });
   } catch (err) {
-    logError(`Error getting assets: ${err?.message || err}`);
-    return res.status(500).json({ message: 'Error obteniendo assets' });
+    logJson('error', `Error getting assets: ${err?.message || err}`, { correlationId: req.correlationId });
+    return res.status(500).json({ message: 'Error obteniendo assets', correlationId: req.correlationId });
   }
 });
 
@@ -40,8 +40,8 @@ router.post('/', authRequired, async (req, res) => {
     const result = await saveAsset(req.body, req.user?.email || 'anónimo');
     return res.status(result.message === 'Asset creado' ? 201 : 200).json(result);
   } catch (err) {
-    logError(`Error saving asset: ${err?.message || err}`);
-    return res.status(500).json({ message: 'Error guardando asset' });
+    logJson('error', `Error saving asset: ${err?.message || err}`, { correlationId: req.correlationId });
+    return res.status(500).json({ message: 'Error guardando asset', correlationId: req.correlationId });
   }
 });
 
@@ -76,8 +76,8 @@ router.put('/:id', authRequired, async (req, res) => {
 
     return res.json({ message: 'Asset actualizado', asset: updated });
   } catch (err) {
-    logError(`Error updating asset: ${err?.message || err}`);
-    return res.status(500).json({ message: 'Error actualizando asset' });
+    logJson('error', `Error updating asset: ${err?.message || err}`, { correlationId: req.correlationId });
+    return res.status(500).json({ message: 'Error actualizando asset', correlationId: req.correlationId });
   }
 });
 
@@ -106,8 +106,8 @@ router.delete('/:id', authRequired, async (req, res) => {
 
     return res.json({ message: 'Asset eliminado' });
   } catch (err) {
-    logError(`Error deleting asset: ${err?.message || err}`);
-    return res.status(500).json({ message: 'Error eliminando asset' });
+    logJson('error', `Error deleting asset: ${err?.message || err}`, { correlationId: req.correlationId });
+    return res.status(500).json({ message: 'Error eliminando asset', correlationId: req.correlationId });
   }
 });
 

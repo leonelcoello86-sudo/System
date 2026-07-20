@@ -6,7 +6,7 @@ import { User } from '../models/User.js';
 import { SystemAudit } from '../models/SystemAudit.js';
 import { nowTimeString } from '../utils/time.js';
 import { validatePassword } from '../utils/passwordPolicy.js';
-import { logError } from '../utils/logger.js';
+import { logJson } from '../utils/logger.js';
 
 const router = Router();
 
@@ -54,8 +54,8 @@ router.put('/admin-password', authRequired, requireAdmin, async (req, res) => {
 
     return res.json({ message: 'Credenciales actualizadas' });
   } catch (err) {
-    logError(`Error updating admin password: ${err?.message || err}`);
-    return res.status(500).json({ message: 'Error actualizando credenciales' });
+    logJson('error', `Error updating admin password: ${err?.message || err}`, { correlationId: req.correlationId });
+    return res.status(500).json({ message: 'Error actualizando credenciales', correlationId: req.correlationId });
   }
 });
 
