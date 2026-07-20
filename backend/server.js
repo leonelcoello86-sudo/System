@@ -14,6 +14,7 @@ import { adminRouter } from './src/routes/admin.routes.js';
 import { globalLimiter } from './src/middleware/rateLimiter.js';
 import { errorHandler } from './src/middleware/errorHandler.js';
 import { mongoSanitize } from './src/middleware/mongoSanitize.js';
+import { correlationId } from './src/middleware/correlationId.js';
 
 dotenv.config();
 
@@ -58,6 +59,7 @@ export function createApp() {
   }));
 
   app.use(globalLimiter);
+  app.use(correlationId);
   app.use(express.json({ limit: '1mb' }));
   app.use(mongoSanitize);
 
