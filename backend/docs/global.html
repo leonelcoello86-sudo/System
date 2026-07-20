@@ -98,6 +98,130 @@
 
         
             
+<h4 class="name" id="EMAIL_REGEX"><span class="type-signature">(constant) </span>EMAIL_REGEX<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Expresión regular para validar formato de email (RFC 5322 simplificado).
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utils_inputValidation.js.html">utils/inputValidation.js</a>, <a href="utils_inputValidation.js.html#line15">line 15</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="MAX_LENGTHS"><span class="type-signature">(constant) </span>MAX_LENGTHS<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Longitudes máximas permitidas para cada campo de entrada.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utils_inputValidation.js.html">utils/inputValidation.js</a>, <a href="utils_inputValidation.js.html#line4">line 4</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
 <h4 class="name" id="PASSWORD_REGEX"><span class="type-signature">(constant) </span>PASSWORD_REGEX<span class="type-signature"></span></h4>
 
 
@@ -455,7 +579,7 @@ Limita battery/fuel al rango 0-100 y asegura que personnel sea >= 0.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="services_assetService.js.html">services/assetService.js</a>, <a href="services_assetService.js.html#line51">line 51</a>
+        <a href="services_assetService.js.html">services/assetService.js</a>, <a href="services_assetService.js.html#line64">line 64</a>
     </li></ul></dd>
     
 
@@ -502,6 +626,190 @@ Limita battery/fuel al rango 0-100 y asegura que personnel sea >= 0.
 </dl>
 
     
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="correlationId"><span class="type-signature"></span>correlationId<span class="signature">(req, res, next)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Middleware que asigna un identificador único (UUID v4) a cada petición HTTP.
+El UUID se agrega a req.correlationId y al header de respuesta X-Correlation-ID.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Petición HTTP de Express.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Respuesta HTTP de Express.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>next</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Siguiente middleware.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="middleware_correlationId.js.html">middleware/correlationId.js</a>, <a href="middleware_correlationId.js.html#line10">line 10</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -609,8 +917,8 @@ Limita battery/fuel al rango 0-100 y asegura que personnel sea >= 0.
 
 
 <div class="description">
-    Middleware global de manejo de errores. Registra el error en consola y retorna 500.
-En producción no expone detalles del error al cliente.
+    Middleware global de manejo de errores. Registra el error en formato JSON y retorna 500.
+Nunca expone detalles del error interno al cliente; solo retorna un código de correlación.
 </div>
 
 
@@ -926,7 +1234,7 @@ En producción no expone detalles del error al cliente.
 
 
 <div class="description">
-    Registra un mensaje de error en consola.
+    Registra un mensaje de error en consola (formato legible por humanos).
 </div>
 
 
@@ -1063,7 +1371,7 @@ En producción no expone detalles del error al cliente.
 
 
 <div class="description">
-    Registra un mensaje de nivel informativo en consola.
+    Registra un mensaje de nivel informativo en consola (formato legible por humanos).
 </div>
 
 
@@ -1192,6 +1500,233 @@ En producción no expone detalles del error al cliente.
     
 
     
+    <h4 class="name" id="logJson"><span class="type-signature"></span>logJson<span class="signature">(level, message, meta<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Registra un evento en formato JSON estructurado, legible por máquinas.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>level</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">Nivel del evento (info, warn, error).</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>message</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">Descripción del evento.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>meta</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    {}
+                
+                </td>
+            
+
+            <td class="description last">Metadatos adicionales (correlationId, userId, etc.).</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utils_logger.js.html">utils/logger.js</a>, <a href="utils_logger.js.html#line39">line 39</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
     <h4 class="name" id="logWarning"><span class="type-signature"></span>logWarning<span class="signature">(message)</span><span class="type-signature"></span></h4>
     
 
@@ -1200,7 +1735,7 @@ En producción no expone detalles del error al cliente.
 
 
 <div class="description">
-    Registra un mensaje de advertencia en consola.
+    Registra un mensaje de advertencia en consola (formato legible por humanos).
 </div>
 
 
@@ -1723,7 +2258,7 @@ En producción no expone detalles del error al cliente.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="services_assetService.js.html">services/assetService.js</a>, <a href="services_assetService.js.html#line13">line 13</a>
+        <a href="services_assetService.js.html">services/assetService.js</a>, <a href="services_assetService.js.html#line14">line 14</a>
     </li></ul></dd>
     
 
@@ -2127,6 +2662,165 @@ para prevenir inyección NoSQL.
     
 
     
+    <h4 class="name" id="sanitizeString"><span class="type-signature"></span>sanitizeString<span class="signature">(value)</span><span class="type-signature"> &rarr; {string}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Sanitiza un string eliminando caracteres peligrosos y normalizando espacios.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>value</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Valor a sanitizar.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utils_inputValidation.js.html">utils/inputValidation.js</a>, <a href="utils_inputValidation.js.html#line65">line 65</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Valor sanitizado.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">string</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
     <h4 class="name" id="saveAsset"><span class="type-signature"></span>saveAsset<span class="signature">(payload, actor)</span><span class="type-signature"> &rarr; {Promise.&lt;{message: string}>}</span></h4>
     
 
@@ -2252,7 +2946,7 @@ Si ya existe un asset con el mismo nombre, lo actualiza; de lo contrario, lo cre
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="services_assetService.js.html">services/assetService.js</a>, <a href="services_assetService.js.html#line86">line 86</a>
+        <a href="services_assetService.js.html">services/assetService.js</a>, <a href="services_assetService.js.html#line99">line 99</a>
     </li></ul></dd>
     
 
@@ -2411,7 +3105,371 @@ Si ya existe un asset con el mismo nombre, lo actualiza; de lo contrario, lo cre
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="services_assetService.js.html">services/assetService.js</a>, <a href="services_assetService.js.html#line25">line 25</a>
+        <a href="services_assetService.js.html">services/assetService.js</a>, <a href="services_assetService.js.html#line26">line 26</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Resultado de la validación.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="validateEmail"><span class="type-signature"></span>validateEmail<span class="signature">(email)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Valida que un email tenga formato válido y longitud permitida.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>email</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Email a validar.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utils_inputValidation.js.html">utils/inputValidation.js</a>, <a href="utils_inputValidation.js.html#line22">line 22</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Resultado de la validación.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="validateMaxLength"><span class="type-signature"></span>validateMaxLength<span class="signature">(value, fieldName, maxLength)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Valida que un string no exceda la longitud máxima permitida.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>value</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Valor a validar.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>fieldName</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Nombre del campo (para el mensaje de error).</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>maxLength</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Longitud máxima permitida.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utils_inputValidation.js.html">utils/inputValidation.js</a>, <a href="utils_inputValidation.js.html#line47">line 47</a>
     </li></ul></dd>
     
 
@@ -2639,13 +3697,13 @@ Requiere mínimo 8 caracteres, al menos una minúscula, una mayúscula, un núme
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#PASSWORD_REGEX">PASSWORD_REGEX</a></li><li><a href="global.html#authRequired">authRequired</a></li><li><a href="global.html#buildAssetData">buildAssetData</a></li><li><a href="global.html#ensureAdminUser">ensureAdminUser</a></li><li><a href="global.html#errorHandler">errorHandler</a></li><li><a href="global.html#formatTimestamp">formatTimestamp</a></li><li><a href="global.html#logError">logError</a></li><li><a href="global.html#logInfo">logInfo</a></li><li><a href="global.html#logWarning">logWarning</a></li><li><a href="global.html#mongoSanitize">mongoSanitize</a></li><li><a href="global.html#nowTimeString">nowTimeString</a></li><li><a href="global.html#parseNumber">parseNumber</a></li><li><a href="global.html#requireAdmin">requireAdmin</a></li><li><a href="global.html#sanitizeObject">sanitizeObject</a></li><li><a href="global.html#saveAsset">saveAsset</a></li><li><a href="global.html#validateAssetPayload">validateAssetPayload</a></li><li><a href="global.html#validatePassword">validatePassword</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#EMAIL_REGEX">EMAIL_REGEX</a></li><li><a href="global.html#MAX_LENGTHS">MAX_LENGTHS</a></li><li><a href="global.html#PASSWORD_REGEX">PASSWORD_REGEX</a></li><li><a href="global.html#authRequired">authRequired</a></li><li><a href="global.html#buildAssetData">buildAssetData</a></li><li><a href="global.html#correlationId">correlationId</a></li><li><a href="global.html#ensureAdminUser">ensureAdminUser</a></li><li><a href="global.html#errorHandler">errorHandler</a></li><li><a href="global.html#formatTimestamp">formatTimestamp</a></li><li><a href="global.html#logError">logError</a></li><li><a href="global.html#logInfo">logInfo</a></li><li><a href="global.html#logJson">logJson</a></li><li><a href="global.html#logWarning">logWarning</a></li><li><a href="global.html#mongoSanitize">mongoSanitize</a></li><li><a href="global.html#nowTimeString">nowTimeString</a></li><li><a href="global.html#parseNumber">parseNumber</a></li><li><a href="global.html#requireAdmin">requireAdmin</a></li><li><a href="global.html#sanitizeObject">sanitizeObject</a></li><li><a href="global.html#sanitizeString">sanitizeString</a></li><li><a href="global.html#saveAsset">saveAsset</a></li><li><a href="global.html#validateAssetPayload">validateAssetPayload</a></li><li><a href="global.html#validateEmail">validateEmail</a></li><li><a href="global.html#validateMaxLength">validateMaxLength</a></li><li><a href="global.html#validatePassword">validatePassword</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Sat Jul 18 2026 18:19:33 GMT-0400 (hora de Venezuela)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Mon Jul 20 2026 19:01:23 GMT-0400 (hora de Venezuela)
 </footer>
 
 <script> prettyPrint(); </script>
