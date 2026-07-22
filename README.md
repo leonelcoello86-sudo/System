@@ -240,90 +240,72 @@ sequenceDiagram
     F-->>U: UI actualizada
 ```
 
-### Diagrama de Flujo — Proceso Crítico 1: Autenticación
+### Diagrama de Flujo — Proceso Critico 1: Autenticacion
 
 ```mermaid
 flowchart TD
-    Start([Inicio: Login]) --> Input[/Ingresa email + password/]
-    Input --> ValidateEmail{¿Email válido?<br>(regex + longitud)}
-    ValidateEmail -->|No| Error400[Error 400:<br>Formato de email inválido]
-    ValidateEmail -->|Sí| CheckRequired{¿Campos requeridos<br>completos?}
-    CheckRequired -->|No| Error400B[Error 400:<br>Email y password requeridos]
-    CheckRequired -->|Sí| RateLimit{¿Rate limit<br>excedido?<br>(5 intentos/15min)}
-    RateLimit -->|Sí| Error429[Error 429:<br>Demasiados intentos]
-    RateLimit -->|No| FindUser[(Buscar user en DB)]
-    FindUser --> UserExists{¿User existe?}
-    UserExists -->|No| LogDenegado1[AccessLog: Denegado]
-    LogDenegado1 --> Error401[Error 401:<br>Credenciales inválidas]
-    UserExists -->|Sí| ComparePass[bcrypt.compare]
-    ComparePass --> PassOk{¿Password correcto?}
-    PassOk -->|No| LogDenegado2[AccessLog: Denegado]
-    LogDenegado2 --> Error401
-    PassOk -->|Sí| LogConcedido[AccessLog: Concedido]
-    LogConcedido --> AuditLog[SystemAudit:<br>Sesión iniciada]
-    AuditLog --> GenToken[Generar JWT<br>(exp: 1h)]
-    GenToken --> ReturnToken[/Retorna: token + user/]
-    ReturnToken --> StoreToken[localStorage: token + user]
-    StoreToken --> Dashboard([Dashboard Táctico])
-
-    style Start fill:#059669,color:#fff
-    style Dashboard fill:#059669,color:#fff
-    style Error400 fill:#dc2626,color:#fff
-    style Error400B fill:#dc2626,color:#fff
-    style Error429 fill:#dc2626,color:#fff
-    style Error401 fill:#dc2626,color:#fff
+    A([Inicio: Login]) --> B[/Ingresa email + password/]
+    B --> C{Email valido?}
+    C -->|No| D[Error 400]
+    C -->|Si| E{Campos completos?}
+    E -->|No| F[Error 400]
+    E -->|Si| G{Rate limit OK?}
+    G -->|No| H[Error 429]
+    G -->|Si| I[(Buscar user en DB)]
+    I --> J{User existe?}
+    J -->|No| K[AccessLog: Denegado]
+    K --> L[Error 401]
+    J -->|Si| M[bcrypt.compare]
+    M --> N{Password correcto?}
+    N -->|No| O[AccessLog: Denegado]
+    O --> L
+    N -->|Si| P[AccessLog: Concedido]
+    P --> Q[SystemAudit: Sesion iniciada]
+    Q --> R[Generar JWT]
+    R --> S[/Retorna token + user/]
+    S --> T[localStorage: token]
+    T --> U([Dashboard])
 ```
 
-### Diagrama de Flujo — Proceso Crítico 2: Gestión de Activos
+### Diagrama de Flujo — Proceso Critico 2: Gestion de Activos
 
 ```mermaid
 flowchart TD
-    Start([Inicio: CRUD Activo]) --> Auth{¿Autenticado?<br>(Bearer token)}
-    Auth -->|No| Error401[Error 401:<br>Missing token]
-    Auth -->|Sí| ValidateToken{¿Token válido?<br>(JWT verify)}
-    ValidateToken -->|No| Error401B[Error 401:<br>Invalid token]
-    ValidateToken -->|Sí| Method{¿Método HTTP?}
+    A([Inicio: CRUD]) --> B{Autenticado?}
+    B -->|No| C[Error 401: Missing token]
+    B -->|Si| D{Token valido?}
+    D -->|No| E[Error 401: Invalid token]
+    D -->|Si| F{Metodo HTTP?}
 
-    Method -->|POST| ValidateBody[validateAssetPayload]
-    Method -->|PUT| ValidateId{¿ObjectId válido?}
-    Method -->|DELETE| ValidateIdD{¿ObjectId válido?}
-    Method -->|GET| FetchAll[(Asset.find: limit 500)]
-    FetchAll --> ReturnAll[/Retorna: assets/]
+    F -->|POST| G[validateAssetPayload]
+    F -->|PUT| H{ObjectId valido?}
+    F -->|DELETE| I{ObjectId valido?}
+    F -->|GET| J[(Asset.find: limit 500)]
+    J --> K[/Retorna assets/]
 
-    ValidateId -->|No| Error400ID[Error 400:<br>ID inválido]
-    ValidateId -->|Sí| ValidateBody
-    ValidateIdD -->|No| Error400ID
-    ValidateIdD -->|Sí| CheckExists{¿Asset existe?}
+    H -->|No| L[Error 400: ID invalido]
+    H -->|Si| G
+    I -->|No| L
+    I -->|Si| M{Asset existe?}
 
-    ValidateBody --> PayloadOk{¿Payload válido?<br>(type, name, icon,<br>coords)}
-    PayloadOk -->|No| Error400[Error 400:<br>message de validación]
-    PayloadOk -->|Sí| Sanitize[sanitizeString<br>en name, type, status]
-    Sanitize --> BuildData[buildAssetData<br>(normaliza battery/fuel/personnel)]
+    G --> N{Payload valido?}
+    N -->|No| O[Error 400]
+    N -->|Si| P[sanitizeString]
+    P --> Q[buildAssetData]
 
-    BuildData --> UPSERT{¿Asset con<br>mismo nombre?}
-    UPSERT -->|Sí| Update[(Asset.updateOne)]
-    UPSERT -->|No| Create[(Asset.create)]
+    Q --> R{Mismo nombre?}
+    R -->|Si| S[(Asset.updateOne)]
+    R -->|No| T[(Asset.create)]
 
-    Update --> AuditUpdate[SystemAudit:<br>Activo actualizado]
-    Create --> AuditCreate[SystemAudit:<br>Activo creado]
-    AuditUpdate --> ReturnOk[/Retorna: 200 OK/]
-    AuditCreate --> ReturnCreated[/Retorna: 201 Created/]
+    S --> U[SystemAudit: actualizado]
+    T --> V[SystemAudit: creado]
+    U --> W[/Retorna 200 OK/]
+    V --> X[/Retorna 201 Created/]
 
-    CheckExists -->|No| Error404[Error 404:<br>Asset no encontrado]
-    CheckExists -->|Sí| Delete[(Asset.findByIdAndDelete)]
-    Delete --> AuditDelete[SystemAudit:<br>Activo eliminado - Severity: Alerta]
-    AuditDelete --> ReturnDel[/Retorna: Asset eliminado/]
-
-    style Start fill:#059669,color:#fff
-    style ReturnAll fill:#059669,color:#fff
-    style ReturnOk fill:#059669,color:#fff
-    style ReturnCreated fill:#059669,color:#fff
-    style ReturnDel fill:#059669,color:#fff
-    style Error401 fill:#dc2626,color:#fff
-    style Error401B fill:#dc2626,color:#fff
-    style Error400ID fill:#dc2626,color:#fff
-    style Error400 fill:#dc2626,color:#fff
-    style Error404 fill:#dc2626,color:#fff
+    M -->|No| Y[Error 404]
+    M -->|Si| Z[(Asset.findByIdAndDelete)]
+    Z --> AA[SystemAudit: eliminado]
+    AA --> AB[/Retorna eliminado/]
 ```
 
 ---
