@@ -418,3 +418,5 @@ El workflow de CI está en `.github/workflows/ci.yml` y ejecuta los tests del ba
 - Cambio de contraseña administrativo (`PUT /api/admin/admin-password`)
 
 
+## Nota de seguridad
+No subas `.env` ni credenciales reales al repositorio. El archivo `.env` está excluido en `.gitignore`.
