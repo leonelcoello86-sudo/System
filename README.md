@@ -245,24 +245,24 @@ sequenceDiagram
 ```mermaid
 flowchart TD
     Start([Inicio: Login]) --> Input[/Ingresa email + password/]
-    Input --> ValidateEmail{¿Email válido?\n(regex + longitud)}
-    ValidateEmail -->|No| Error400[Error 400:\nFormato de email inválido]
-    ValidateEmail -->|Sí| CheckRequired{¿Campos requeridos\ncompletos?}
-    CheckRequired -->|No| Error400B[Error 400:\nEmail y password requeridos]
-    CheckRequired -->|Sí| RateLimit{¿Rate limit\nexcedido?\n(5 intentos/15min)}
-    RateLimit -->|Sí| Error429[Error 429:\nDemasiados intentos]
+    Input --> ValidateEmail{¿Email válido?<br>(regex + longitud)}
+    ValidateEmail -->|No| Error400[Error 400:<br>Formato de email inválido]
+    ValidateEmail -->|Sí| CheckRequired{¿Campos requeridos<br>completos?}
+    CheckRequired -->|No| Error400B[Error 400:<br>Email y password requeridos]
+    CheckRequired -->|Sí| RateLimit{¿Rate limit<br>excedido?<br>(5 intentos/15min)}
+    RateLimit -->|Sí| Error429[Error 429:<br>Demasiados intentos]
     RateLimit -->|No| FindUser[(Buscar user en DB)]
     FindUser --> UserExists{¿User existe?}
     UserExists -->|No| LogDenegado1[AccessLog: Denegado]
-    LogDenegado1 --> Error401[Error 401:\nCredenciales inválidas]
+    LogDenegado1 --> Error401[Error 401:<br>Credenciales inválidas]
     UserExists -->|Sí| ComparePass[bcrypt.compare]
     ComparePass --> PassOk{¿Password correcto?}
     PassOk -->|No| LogDenegado2[AccessLog: Denegado]
     LogDenegado2 --> Error401
     PassOk -->|Sí| LogConcedido[AccessLog: Concedido]
-    LogConcedido --> AuditLog[SystemAudit:\nSesión iniciada]
-    AuditLog --> GenToken[Generar JWT\n(exp: 1h)]
-    GenToken --> ReturnToken[/Retorna: {token, user}/]
+    LogConcedido --> AuditLog[SystemAudit:<br>Sesión iniciada]
+    AuditLog --> GenToken[Generar JWT<br>(exp: 1h)]
+    GenToken --> ReturnToken[/Retorna: token + user/]
     ReturnToken --> StoreToken[localStorage: token + user]
     StoreToken --> Dashboard([Dashboard Táctico])
 
@@ -278,41 +278,41 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    Start([Inicio: CRUD Activo]) --> Auth{¿Autenticado?\n(Bearer token)}
-    Auth -->|No| Error401[Error 401:\nMissing token]
-    Auth -->|Sí| ValidateToken{¿Token válido?\n(JWT verify)}
-    ValidateToken -->|No| Error401B[Error 401:\nInvalid token]
+    Start([Inicio: CRUD Activo]) --> Auth{¿Autenticado?<br>(Bearer token)}
+    Auth -->|No| Error401[Error 401:<br>Missing token]
+    Auth -->|Sí| ValidateToken{¿Token válido?<br>(JWT verify)}
+    ValidateToken -->|No| Error401B[Error 401:<br>Invalid token]
     ValidateToken -->|Sí| Method{¿Método HTTP?}
 
     Method -->|POST| ValidateBody[validateAssetPayload]
     Method -->|PUT| ValidateId{¿ObjectId válido?}
     Method -->|DELETE| ValidateIdD{¿ObjectId válido?}
     Method -->|GET| FetchAll[(Asset.find: limit 500)]
-    FetchAll --> ReturnAll[/Retorna: {assets}/]
+    FetchAll --> ReturnAll[/Retorna: assets/]
 
-    ValidateId -->|No| Error400ID[Error 400:\nID inválido]
+    ValidateId -->|No| Error400ID[Error 400:<br>ID inválido]
     ValidateId -->|Sí| ValidateBody
     ValidateIdD -->|No| Error400ID
     ValidateIdD -->|Sí| CheckExists{¿Asset existe?}
 
-    ValidateBody --> PayloadOk{¿Payload válido?\n(type, name, icon,\ncoords)}
-    PayloadOk -->|No| Error400[Error 400:\nmessage de validación]
-    PayloadOk -->|Sí| Sanitize[sanitizeString\nen name, type, status]
-    Sanitize --> BuildData[buildAssetData\n(normaliza battery/fuel/personnel)]
+    ValidateBody --> PayloadOk{¿Payload válido?<br>(type, name, icon,<br>coords)}
+    PayloadOk -->|No| Error400[Error 400:<br>message de validación]
+    PayloadOk -->|Sí| Sanitize[sanitizeString<br>en name, type, status]
+    Sanitize --> BuildData[buildAssetData<br>(normaliza battery/fuel/personnel)]
 
-    BuildData --> UPSERT{¿Asset con\nmismo nombre?}
+    BuildData --> UPSERT{¿Asset con<br>mismo nombre?}
     UPSERT -->|Sí| Update[(Asset.updateOne)]
     UPSERT -->|No| Create[(Asset.create)]
 
-    Update --> AuditUpdate[SystemAudit:\nActivo actualizado]
-    Create --> AuditCreate[SystemAudit:\nActivo creado]
+    Update --> AuditUpdate[SystemAudit:<br>Activo actualizado]
+    Create --> AuditCreate[SystemAudit:<br>Activo creado]
     AuditUpdate --> ReturnOk[/Retorna: 200 OK/]
     AuditCreate --> ReturnCreated[/Retorna: 201 Created/]
 
-    CheckExists -->|No| Error404[Error 404:\nAsset no encontrado]
+    CheckExists -->|No| Error404[Error 404:<br>Asset no encontrado]
     CheckExists -->|Sí| Delete[(Asset.findByIdAndDelete)]
-    Delete --> AuditDelete[SystemAudit:\nActivo eliminado - Severity: Alerta]
-    AuditDelete --> ReturnDel[/Retorna: {message: Asset eliminado}/]
+    Delete --> AuditDelete[SystemAudit:<br>Activo eliminado - Severity: Alerta]
+    AuditDelete --> ReturnDel[/Retorna: Asset eliminado/]
 
     style Start fill:#059669,color:#fff
     style ReturnAll fill:#059669,color:#fff
