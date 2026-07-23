@@ -3,9 +3,14 @@ import ProfileMenu from './ProfileMenu.jsx';
 function Header({ currentUser, currentTime, onSelectProfileAction, onLogout }) {
   return (
     <header className="flex flex-col gap-4 rounded-[30px] border border-white/10 bg-white/5 p-6 shadow-glass backdrop-blur-xl sm:flex-row sm:items-center sm:justify-between">
-      <div className="space-y-2">
-        <p className="text-xs uppercase tracking-[0.3em] text-cyan-300">Operador Táctico</p>
-        <h2 className="text-2xl font-semibold tracking-[0.02em] text-white">{currentUser?.email}</h2>
+      <div className="flex items-center gap-4">
+        <div className="h-16 w-16 rounded-3xl bg-[#06121a]/90 p-3 shadow-[0_0_30px_rgba(0,242,255,0.12)]">
+          <img src="/logo.svg" alt="AETHER Logo" className="h-full w-full object-contain" />
+        </div>
+        <div className="space-y-2">
+          <p className="text-xs uppercase tracking-[0.3em] text-cyan-300">Operador Táctico</p>
+          <h2 className="text-2xl font-semibold tracking-[0.02em] text-white">{currentUser?.email}</h2>
+        </div>
       </div>
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
